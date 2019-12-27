@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace hang_man
@@ -29,14 +26,15 @@ namespace hang_man
 
             Console.WriteLine("Hang Man");            
             Console.WriteLine();
-            foreach (string ico in icon(12))
+            foreach (string ico in icon(9))
             {
                 Console.WriteLine(ico);
             }
+            Console.WriteLine();
             Console.WriteLine("[Benjamin B-L]");
             Console.WriteLine();
-            Console.WriteLine("[V2.3.0]");
-            Console.WriteLine("Better Error Handling");
+            Console.WriteLine("[V = 2.1.0]");
+            Console.WriteLine("Better Error Handeling");
             Console.WriteLine();
             Console.ReadKey();
 
@@ -63,16 +61,33 @@ namespace hang_man
         {
             List<string> words = new List<string>();
             int i = 0;
-            using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"\words.txt"))
+            try
             {
-                string s = "";
-                while ((s = sr.ReadLine()) != null)
+                using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"\words.txt"))
                 {
-                    words.Add(s);
-                    i++;
+                    string s = "";
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        words.Add(s);
+                        i++;
+                    }
                 }
+                return words.ToArray();
             }
-            return words.ToArray();
+            catch
+            {
+                using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"/words.txt"))
+                {
+                    string s = "";
+                    while ((s = sr.ReadLine()) != null)
+                    {
+                        words.Add(s);
+                        i++;
+                    }
+                }
+                return words.ToArray();
+            }
+            
         }
         public static string pick(string[] opt)
         {
@@ -82,17 +97,16 @@ namespace hang_man
 
             return word;
         }
-        public static bool hang(string word)
+        public static bool hang(string word = "")
         {
             bool win = false;
             int man = 0;
-            int ou = 12;
+            int ou = 9;
             bool done = false;
-            string key;
-            int count = 0;
-            bool rend = false;
+            string key = " ";
             List<string> screen = new List<string>();
             List<string> left = new List<string>();
+            bool go = false;
 
             int len = word.Length;
 
@@ -101,25 +115,22 @@ namespace hang_man
                 screen.Add("_");
             }
 
-            rend = false;
-            count = 0;
-
-            while (!rend & count < 10)
-            {
-                rend = render(screen.ToArray(), man, ou, left.ToArray());
-                count++;
-            }
-
-            if (!rend)
-            {
-                Console.WriteLine("FAILED TO RENDER");
-            }
+            render(screen.ToArray(), man, ou, left.ToArray());
 
             while (!done)
             {
                 key = Console.ReadLine();
 
-                if (word.Contains(key))
+                try
+                {
+                    go = word.Contains(key);
+                }
+                catch
+                {
+                    go = false;
+                }
+
+                if (go)
                 {
                     string[] aa = screen.ToArray();
                     int bb = aa.Length;
@@ -183,14 +194,39 @@ namespace hang_man
                     }
                     else
                     {
-                        if (key.Length > 1)
+                        try
+                        {
+                            go = key.Length > 1;
+                        }
+                        catch
+                        {
+                            go = false;
+                        }
+
+                        if (go)
                         {
                             man++;
                         }
                         else
                         {
-                            man++;
-                            left.Add(key);
+                            try
+                            {
+                                go = ischar(System.Convert.ToChar(key));
+                            }
+                            catch
+                            {
+                                go = false;
+                            }
+
+                            if (go)
+                            {
+                                man++;
+                                left.Add(key);
+                            }
+                            else
+                            {
+                                man++;
+                            }
                         }
                         
                         if (man >= ou)
@@ -208,20 +244,7 @@ namespace hang_man
                         }
                     }
                 }
-                rend = false;
-                count = 0;
-
-                while (!rend & count < 10)
-                {
-                    rend = render(screen.ToArray(), man, ou, left.ToArray());
-                    count++;
-                }
-
-                if (!rend)
-                {
-                    Console.WriteLine("FAILED TO RENDER");
-                }
-                
+                render(screen.ToArray(), man, ou, left.ToArray());
                 if (done)
                 {
                     break;
@@ -231,51 +254,39 @@ namespace hang_man
             end(word, win, icon(man));
             return win;
         }
-        public static bool render(string[] src, int lives, int ou, string[] left)
+        public static void render(string[] src, int lives, int ou, string[] left)
         {
-            try
+            Console.Clear();
+
+            string[] ico = icon(lives);
+
+            foreach (string ic in ico)
             {
-                Console.Clear();
-
-                string[] ico = icon(lives);
-
-                foreach (string ic in ico)
-                {
-                    Console.WriteLine(ic);
-                }
-
-                Console.WriteLine();
-
-                Console.Write(Convert.ToString(lives) + "/" + Convert.ToString(ou));
-                Console.WriteLine();
-                Console.WriteLine();
-
-                foreach (string o in src)
-                {
-                    Console.Write(o + " ");
-                }
-                Console.WriteLine();
-                Console.WriteLine();
-                foreach (string l in left)
-                {
-                    Console.Write(l + " ");
-                }
-                Console.WriteLine();
-
-                return true;
+                Console.WriteLine(ic);
             }
-            catch
+
+            Console.WriteLine();
+
+            Console.Write(Convert.ToString(lives) + "/" + Convert.ToString(ou));
+            Console.WriteLine();
+            Console.WriteLine();
+
+            foreach (string o in src)
             {
-                return false;
+                Console.Write(o + " ");
             }
+            Console.WriteLine();
+            Console.WriteLine();
+            foreach (string l in left)
+            {
+                Console.Write(l + " ");
+            }
+            Console.WriteLine();
         }
         public static string[] icon(int live)
         {
-            string[] ico12 = {"_______","|/    |","|     O",@"|    /|\",@"|     /\",@"|\","__________"};
-            string[] ico11 = { "_______", "|/    |", "|     O", @"|    /|\", @"|      \", @"|\", "__________" };
-            string[] ico10 = { "_______", "|/    |", "|     O", @"|    /|\", @"|     ", @"|\", "__________" };
-            string[] ico9 = { "_______", "|/    |", "|     O", @"|    /|", @"|     ", @"|\", "__________" };
-            string[] ico8 = { "_______", "|/    |", "|     O", @"|    /", @"|     ", @"|\", "__________" };
+            string[] ico9 = {"_______","|/    |","|     O",@"|    /|\",@"|     /\",@"|\","__________"};
+            string[] ico8 = { "_______", "|/    |", "|     O", @"|    /|\", @"|     ", @"|\", "__________" };
             string[] ico7 = { "_______", "|/    |", "|     O", @"|    ", @"|     ", @"|\", "__________" };
             string[] ico6 = { "_______", "|/    |", "|     ", @"|    ", @"|     ", @"|\", "__________" };
             string[] ico5 = { "_______", "|/    ", "|     ", @"|    ", @"|     ", @"|\", "__________" };
@@ -289,18 +300,6 @@ namespace hang_man
             if (live == 0)
             {
                 return ico0;
-            }
-            if (live == 12)
-            {
-                return ico12;
-            }
-            if (live == 11)
-            {
-                return ico11;
-            }
-            if (live == 10)
-            {
-                return ico10;
             }
             if (live == 9)
             {
@@ -357,7 +356,7 @@ namespace hang_man
             }
             else
             {
-                Console.WriteLine("You Loose :(");
+                Console.WriteLine("You Lose Bollock Head:(");
                 Console.WriteLine();
                 foreach (string icon in man)
                 {
@@ -366,6 +365,22 @@ namespace hang_man
                 Console.WriteLine();
                 Console.WriteLine("The word was: " + word);
             }
+        }
+        public static bool ischar(char lett)
+        {
+            bool lol = true;
+
+            char[] all = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+            foreach (char let in all)
+            {
+                if (lett != let)
+                {
+                    lol = false;
+                }
+            }
+
+            return lol;
         }
     }
 }
