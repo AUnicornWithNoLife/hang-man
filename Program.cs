@@ -33,8 +33,8 @@ namespace hang_man
             Console.WriteLine();
             Console.WriteLine("[Benjamin B-L]");
             Console.WriteLine();
-            Console.WriteLine("[V = 2.1.0]");
-            Console.WriteLine("Better Error Handeling");
+            Console.WriteLine("[V = 3.1.1]");
+            Console.WriteLine("More Realism");
             Console.WriteLine();
             Console.ReadKey();
 
@@ -106,7 +106,6 @@ namespace hang_man
             string key = " ";
             List<string> screen = new List<string>();
             List<string> left = new List<string>();
-            bool go = false;
 
             int len = word.Length;
 
@@ -119,18 +118,9 @@ namespace hang_man
 
             while (!done)
             {
-                key = Console.ReadLine();
+                key = Console.ReadLine().ToLower();
 
-                try
-                {
-                    go = word.Contains(key);
-                }
-                catch
-                {
-                    go = false;
-                }
-
-                if (go)
+                if (word.Contains(key))
                 {
                     string[] aa = screen.ToArray();
                     int bb = aa.Length;
@@ -194,31 +184,15 @@ namespace hang_man
                     }
                     else
                     {
-                        try
-                        {
-                            go = key.Length > 1;
-                        }
-                        catch
-                        {
-                            go = false;
-                        }
 
-                        if (go)
+                        if (key.Length > 1)
                         {
                             man++;
                         }
                         else
                         {
-                            try
-                            {
-                                go = ischar(System.Convert.ToChar(key));
-                            }
-                            catch
-                            {
-                                go = false;
-                            }
 
-                            if (go)
+                            if (ischar(System.Convert.ToChar(key)))
                             {
                                 man++;
                                 left.Add(key);
@@ -254,7 +228,7 @@ namespace hang_man
             end(word, win, icon(man));
             return win;
         }
-        public static void render(string[] src, int lives, int ou, string[] left)
+        public static void render(string[] src, int lives, int ou, string[] lefto)
         {
             Console.Clear();
 
@@ -277,7 +251,7 @@ namespace hang_man
             }
             Console.WriteLine();
             Console.WriteLine();
-            foreach (string l in left)
+            foreach (string l in lefto)
             {
                 Console.Write(l + " ");
             }
@@ -356,7 +330,7 @@ namespace hang_man
             }
             else
             {
-                Console.WriteLine("You Lose Bollock Head:(");
+                Console.WriteLine("You Lose :(");
                 Console.WriteLine();
                 foreach (string icon in man)
                 {
@@ -368,15 +342,16 @@ namespace hang_man
         }
         public static bool ischar(char lett)
         {
-            bool lol = true;
+            bool lol = false;
 
             char[] all = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
             foreach (char let in all)
             {
-                if (lett != let)
+                if (lett == let)
                 {
-                    lol = false;
+                    lol = true;
+                    break;
                 }
             }
 
