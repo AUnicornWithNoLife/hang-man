@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace hang_man
+namespace Hang_man
 {
     class Program
     {
         static void Main(string[] args)
         {
-            string[] words;
+            string[] Words;
 
             try
             {
-                words = word();
+                Words = Word();
             }
             catch
             {
                 Console.WriteLine("UNABLE TO OPEN WORDS.TXT, PLEASE MAKE SURE IT HASNT BEEN DELETED");
+                Console.WriteLine();
+                Console.WriteLine("The Current Programme Has Been Closed");
                 Console.ReadKey();
                 return;
             }
@@ -26,15 +28,15 @@ namespace hang_man
 
             Console.WriteLine("Hang Man");            
             Console.WriteLine();
-            foreach (string ico in icon(9))
+            foreach (string ico in Icon(9))
             {
                 Console.WriteLine(ico);
             }
             Console.WriteLine();
             Console.WriteLine("[Benjamin B-L]");
             Console.WriteLine();
-            Console.WriteLine("[V = 3.1.1]");
-            Console.WriteLine("More Realism");
+            Console.WriteLine("[V = 4.1.0]");
+            Console.WriteLine("Better Error Handling");
             Console.WriteLine();
             Console.ReadKey();
 
@@ -43,7 +45,7 @@ namespace hang_man
                 Console.WriteLine("[Loading...]");
                 while (len < 8)
                 {
-                    w = pick(words);
+                    w = Pick(Words);
                     len = w.Length;
                 }
 
@@ -51,53 +53,66 @@ namespace hang_man
 
                 len = 0;
 
-                bool b = hang(w);
+                try
+                {
+                    bool b = Hang(w);
+                }
+                catch
+                {
+                    Console.WriteLine("ERROR");
+                    Console.WriteLine();
+                    break;
+                }
 
                 Console.ReadKey();
                 Console.Clear();
             }
+
+            Console.WriteLine("The Current Programme Has Been Closed");
+            Console.ReadKey();
+            return;
         }
-        public static string[] word()
+        public static string[] Word()
         {
-            List<string> words = new List<string>();
+            List<string> Words = new List<string>();
             int i = 0;
             try
             {
-                using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"\words.txt"))
+                using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"\Words.txt"))
                 {
                     string s = "";
                     while ((s = sr.ReadLine()) != null)
                     {
-                        words.Add(s);
+                        Words.Add(s);
                         i++;
                     }
                 }
-                return words.ToArray();
+                return Words.ToArray();
             }
             catch
             {
-                using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"/words.txt"))
+                using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"/Words.txt"))
                 {
                     string s = "";
                     while ((s = sr.ReadLine()) != null)
                     {
-                        words.Add(s);
+                        Words.Add(s);
                         i++;
                     }
                 }
-                return words.ToArray();
+                return Words.ToArray();
             }
             
         }
-        public static string pick(string[] opt)
+        public static string Pick(string[] opt)
         {
             Random rand = new Random();
             int index = rand.Next(opt.Length);
-            string word = opt[index];
+            string Word = opt[index];
 
-            return word;
+            return Word;
         }
-        public static bool hang(string word = "")
+        public static bool Hang(string Word = "")
         {
             bool win = false;
             int man = 0;
@@ -107,20 +122,20 @@ namespace hang_man
             List<string> screen = new List<string>();
             List<string> left = new List<string>();
 
-            int len = word.Length;
+            int len = Word.Length;
 
             for (int i = 0; len > i; i++)
             {
                 screen.Add("_");
             }
 
-            render(screen.ToArray(), man, ou, left.ToArray());
+            rEnder(screen.ToArray(), man, ou, left.ToArray());
 
             while (!done)
             {
                 key = Console.ReadLine().ToLower();
 
-                if (word.Contains(key))
+                if (Word.Contains(key))
                 {
                     string[] aa = screen.ToArray();
                     int bb = aa.Length;
@@ -130,7 +145,7 @@ namespace hang_man
                         {
                             man++;
                         }
-                        else if (Convert.ToString(word[i]) == key)
+                        else if (Convert.ToString(Word[i]) == key)
                         {
                             screen[i] = key;
                         }
@@ -139,9 +154,9 @@ namespace hang_man
                     if (man >= ou)
                     {
                         win = true;
-                        for (int i = 0; word.Length > i; i++)
+                        for (int i = 0; Word.Length > i; i++)
                         {
-                            if (Convert.ToString(word[i]) != screen[i])
+                            if (Convert.ToString(Word[i]) != screen[i])
                             {
                                 win = false;
                                 break;
@@ -150,9 +165,9 @@ namespace hang_man
                         done = true;
                     }
                     win = true;
-                    for (int i = 0; word.Length > i; i++)
+                    for (int i = 0; Word.Length > i; i++)
                     {
-                        if (Convert.ToString(word[i]) != screen[i])
+                        if (Convert.ToString(Word[i]) != screen[i])
                         {
                             win = false;
                             break;
@@ -171,9 +186,9 @@ namespace hang_man
                         if (man >= ou)
                         {
                             win = true;
-                            for (int i = 0; word.Length > i; i++)
+                            for (int i = 0; Word.Length > i; i++)
                             {
-                                if (Convert.ToString(word[i]) != screen[i])
+                                if (Convert.ToString(Word[i]) != screen[i])
                                 {
                                     win = false;
                                     break;
@@ -192,7 +207,7 @@ namespace hang_man
                         else
                         {
 
-                            if (ischar(System.Convert.ToChar(key)))
+                            if (Ischar(System.Convert.ToChar(key)))
                             {
                                 man++;
                                 left.Add(key);
@@ -206,9 +221,9 @@ namespace hang_man
                         if (man >= ou)
                         {
                             win = true;
-                            for (int i = 0; word.Length > i; i++)
+                            for (int i = 0; Word.Length > i; i++)
                             {
-                                if (Convert.ToString(word[i]) != screen[i])
+                                if (Convert.ToString(Word[i]) != screen[i])
                                 {
                                     win = false;
                                     break;
@@ -218,21 +233,21 @@ namespace hang_man
                         }
                     }
                 }
-                render(screen.ToArray(), man, ou, left.ToArray());
+                rEnder(screen.ToArray(), man, ou, left.ToArray());
                 if (done)
                 {
                     break;
                 }
             }
 
-            end(word, win, icon(man));
+            End(Word, win, Icon(man));
             return win;
         }
-        public static void render(string[] src, int lives, int ou, string[] lefto)
+        public static void rEnder(string[] src, int lives, int ou, string[] lefto)
         {
             Console.Clear();
 
-            string[] ico = icon(lives);
+            string[] ico = Icon(lives);
 
             foreach (string ic in ico)
             {
@@ -257,7 +272,7 @@ namespace hang_man
             }
             Console.WriteLine();
         }
-        public static string[] icon(int live)
+        public static string[] Icon(int live)
         {
             string[] ico9 = {"_______","|/    |","|     O",@"|    /|\",@"|     /\",@"|\","__________"};
             string[] ico8 = { "_______", "|/    |", "|     O", @"|    /|\", @"|     ", @"|\", "__________" };
@@ -314,35 +329,37 @@ namespace hang_man
 
             return error;
         }
-        public static void end(string word, bool win, string[] man)
+        public static void End(string Word, bool win, string[] man)
         {
             Console.Clear();
             if (win)
             {
                 Console.WriteLine("You Win!!!");
                 Console.WriteLine();
-                foreach (string icon in man)
+                foreach (string ic in man)
                 {
-                    Console.WriteLine(icon);
+                    Console.WriteLine(ic);
                 }
                 Console.WriteLine();
-                Console.WriteLine("well done for guessing the word: " + word);
+                Console.WriteLine("well done for guessing the Word: " + Word);
             }
             else
             {
                 Console.WriteLine("You Lose :(");
                 Console.WriteLine();
-                foreach (string icon in man)
+                foreach (string ic in man)
                 {
-                    Console.WriteLine(icon);
+                    Console.WriteLine(ic);
                 }
                 Console.WriteLine();
-                Console.WriteLine("The word was: " + word);
+                Console.WriteLine("The Word was: " + Word);
             }
+
+            Console.WriteLine();
         }
-        public static bool ischar(char lett)
+        public static bool Ischar(char lett)
         {
-            bool lol = false;
+            bool o = false;
 
             char[] all = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
@@ -350,12 +367,12 @@ namespace hang_man
             {
                 if (lett == let)
                 {
-                    lol = true;
+                    o = true;
                     break;
                 }
             }
 
-            return lol;
+            return o;
         }
     }
 }
