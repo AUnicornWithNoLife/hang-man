@@ -9,6 +9,7 @@ namespace Hang_man
         static void Main(string[] args)
         {
             string[] Words;
+            ConsoleKeyInfo input;
 
             try
             {
@@ -25,6 +26,7 @@ namespace Hang_man
             
             string w = "";
             int len = 0;
+            bool game;
 
             Console.WriteLine("Hang Man");            
             Console.WriteLine();
@@ -35,8 +37,8 @@ namespace Hang_man
             Console.WriteLine();
             Console.WriteLine("[Benjamin B-L]");
             Console.WriteLine();
-            Console.WriteLine("[V = 4.1.0]");
-            Console.WriteLine("Better Error Handling");
+            Console.WriteLine("[V = 4.2.2]");
+            Console.WriteLine("Programme Exit");
             Console.WriteLine();
             Console.ReadKey();
 
@@ -55,7 +57,7 @@ namespace Hang_man
 
                 try
                 {
-                    bool b = Hang(w);
+                    game = Hang(w);
                 }
                 catch
                 {
@@ -66,11 +68,14 @@ namespace Hang_man
                     return;
                 }
 
-                Console.ReadKey();
+                input = Console.ReadKey();
                 Console.Clear();
-            }
 
-            
+                if (input.Key == ConsoleKey.Escape)
+                {
+                    Environment.Exit(0);
+                }
+            }
         }
         public static string[] Word()
         {
