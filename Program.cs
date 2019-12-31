@@ -28,7 +28,7 @@ namespace Hang_man
 
             Console.WriteLine("Hang Man");            
             Console.WriteLine();
-            foreach (string ico in Icon(9))
+            foreach (string ico in Icon(12))
             {
                 Console.WriteLine(ico);
             }
@@ -59,18 +59,18 @@ namespace Hang_man
                 }
                 catch
                 {
-                    Console.WriteLine("ERROR");
+                    Console.WriteLine("ERROR With Logic or Rendering");
                     Console.WriteLine();
-                    break;
+                    Console.WriteLine("The Current Programme Has Been Closed");
+                    Console.ReadKey();
+                    return;
                 }
 
                 Console.ReadKey();
                 Console.Clear();
             }
 
-            Console.WriteLine("The Current Programme Has Been Closed");
-            Console.ReadKey();
-            return;
+            
         }
         public static string[] Word()
         {
@@ -116,9 +116,9 @@ namespace Hang_man
         {
             bool win = false;
             int man = 0;
-            int ou = 9;
+            int ou = 12;
             bool done = false;
-            string key = " ";
+            string key;
             List<string> screen = new List<string>();
             List<string> left = new List<string>();
 
@@ -129,7 +129,7 @@ namespace Hang_man
                 screen.Add("_");
             }
 
-            rEnder(screen.ToArray(), man, ou, left.ToArray());
+            Render(screen.ToArray(), man, ou, left.ToArray());
 
             while (!done)
             {
@@ -144,16 +144,16 @@ namespace Hang_man
                         if (screen[i] == key)
                         {
                             man++;
+                            break;
                         }
                         else if (Convert.ToString(Word[i]) == key)
                         {
                             screen[i] = key;
-                        }
+                        }                       
                     }
 
                     if (man >= ou)
                     {
-                        win = true;
                         for (int i = 0; Word.Length > i; i++)
                         {
                             if (Convert.ToString(Word[i]) != screen[i])
@@ -233,7 +233,7 @@ namespace Hang_man
                         }
                     }
                 }
-                rEnder(screen.ToArray(), man, ou, left.ToArray());
+                Render(screen.ToArray(), man, ou, left.ToArray());
                 if (done)
                 {
                     break;
@@ -243,7 +243,7 @@ namespace Hang_man
             End(Word, win, Icon(man));
             return win;
         }
-        public static void rEnder(string[] src, int lives, int ou, string[] lefto)
+        public static void Render(string[] src, int lives, int ou, string[] lefto)
         {
             Console.Clear();
 
@@ -274,8 +274,11 @@ namespace Hang_man
         }
         public static string[] Icon(int live)
         {
-            string[] ico9 = {"_______","|/    |","|     O",@"|    /|\",@"|     /\",@"|\","__________"};
-            string[] ico8 = { "_______", "|/    |", "|     O", @"|    /|\", @"|     ", @"|\", "__________" };
+            string[] ico12 = { "_______", "|/    |", "|     O", @"|    /|\", @"|     /\", @"|\", "__________" };
+            string[] ico11 = {"_______","|/    |","|     O",@"|    /|\",@"|     /",@"|\","__________"};
+            string[] ico10 = { "_______", "|/    |", "|     O", @"|    /|\", @"|     ", @"|\", "__________" };
+            string[] ico9 = { "_______", "|/    |", "|     O", @"|    /|", @"|     ", @"|\", "__________" };
+            string[] ico8 = { "_______", "|/    |", "|     O", @"|     |", @"|     ", @"|\", "__________" };
             string[] ico7 = { "_______", "|/    |", "|     O", @"|    ", @"|     ", @"|\", "__________" };
             string[] ico6 = { "_______", "|/    |", "|     ", @"|    ", @"|     ", @"|\", "__________" };
             string[] ico5 = { "_______", "|/    ", "|     ", @"|    ", @"|     ", @"|\", "__________" };
@@ -289,6 +292,18 @@ namespace Hang_man
             if (live == 0)
             {
                 return ico0;
+            }
+            if (live == 12)
+            {
+                return ico12;
+            }
+            if (live == 11)
+            {
+                return ico11;
+            }
+            if (live == 10)
+            {
+                return ico10;
             }
             if (live == 9)
             {
