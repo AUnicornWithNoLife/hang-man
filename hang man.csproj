@@ -33,6 +33,9 @@
   <PropertyGroup>
     <ApplicationIcon>H-Store-logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />

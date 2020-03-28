@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace Hang_man
 {
@@ -8,6 +9,8 @@ namespace Hang_man
     {
         static void Main(string[] args)
         {
+            int wins = 0;
+
             string[] Words;
             ConsoleKeyInfo input;
 
@@ -37,10 +40,16 @@ namespace Hang_man
             Console.WriteLine();
             Console.WriteLine("[Benjamin B-L]");
             Console.WriteLine();
-            Console.WriteLine("[V = 4.2.2]");
-            Console.WriteLine("Programme Exit");
+            Console.WriteLine("[V = 4.3.0]");
+            Console.WriteLine("Wins");
             Console.WriteLine();
-            Console.ReadKey();
+
+            System.ConsoleKeyInfo tmprk = Console.ReadKey();
+
+            if (tmprk.Key == ConsoleKey.Escape)
+            {
+                Environment.Exit(1);
+            }
 
             while (true)
             {
@@ -57,15 +66,24 @@ namespace Hang_man
 
                 try
                 {
-                    game = Hang(w);
+                    game = Hang(w, wins);
                 }
                 catch
                 {
-                    Console.WriteLine("ERROR With Logic or Rendering");
+                    Console.WriteLine("ERROR With Logic or Rendering to Console");
                     Console.WriteLine();
                     Console.WriteLine("The Current Programme Has Been Closed");
                     Console.ReadKey();
                     return;
+                }
+
+                if (game)
+                {
+                    wins++;
+                }
+                else
+                {
+                    wins--;
                 }
 
                 input = Console.ReadKey();
@@ -73,7 +91,7 @@ namespace Hang_man
 
                 if (input.Key == ConsoleKey.Escape)
                 {
-                    Environment.Exit(0);
+                    Environment.Exit(1);
                 }
             }
         }
@@ -117,7 +135,7 @@ namespace Hang_man
 
             return Word;
         }
-        public static bool Hang(string Word = "")
+        public static bool Hang(string Unknown, int wins)
         {
             bool win = false;
             int man = 0;
@@ -127,21 +145,27 @@ namespace Hang_man
             List<string> screen = new List<string>();
             List<string> left = new List<string>();
 
-            int len = Word.Length;
+            int len = Unknown.Length;
 
             for (int i = 0; len > i; i++)
             {
                 screen.Add("_");
             }
 
-            Render(screen.ToArray(), man, ou, left.ToArray());
+            Render(screen.ToArray(), man, ou, left.ToArray(), wins);
 
             while (!done)
             {
                 key = Console.ReadLine().ToLower();
 
-                if (Word.Contains(key))
+                if (Unknown.Contains(key))
                 {
+                    if (Unknown == key)
+                    {
+                        win = true;
+                        done = true;
+                        break;
+                    }
                     string[] aa = screen.ToArray();
                     int bb = aa.Length;
                     for (int i = 0; bb > i; i++)
@@ -151,7 +175,7 @@ namespace Hang_man
                             man++;
                             break;
                         }
-                        else if (Convert.ToString(Word[i]) == key)
+                        else if (Convert.ToString(Unknown[i]) == key)
                         {
                             screen[i] = key;
                         }                       
@@ -159,9 +183,9 @@ namespace Hang_man
 
                     if (man >= ou)
                     {
-                        for (int i = 0; Word.Length > i; i++)
+                        for (int i = 0; Unknown.Length > i; i++)
                         {
-                            if (Convert.ToString(Word[i]) != screen[i])
+                            if (Convert.ToString(Unknown[i]) != screen[i])
                             {
                                 win = false;
                                 break;
@@ -170,9 +194,9 @@ namespace Hang_man
                         done = true;
                     }
                     win = true;
-                    for (int i = 0; Word.Length > i; i++)
+                    for (int i = 0; Unknown.Length > i; i++)
                     {
-                        if (Convert.ToString(Word[i]) != screen[i])
+                        if (Convert.ToString(Unknown[i]) != screen[i])
                         {
                             win = false;
                             break;
@@ -191,9 +215,9 @@ namespace Hang_man
                         if (man >= ou)
                         {
                             win = true;
-                            for (int i = 0; Word.Length > i; i++)
+                            for (int i = 0; Unknown.Length > i; i++)
                             {
-                                if (Convert.ToString(Word[i]) != screen[i])
+                                if (Convert.ToString(Unknown[i]) != screen[i])
                                 {
                                     win = false;
                                     break;
@@ -204,7 +228,6 @@ namespace Hang_man
                     }
                     else
                     {
-
                         if (key.Length > 1)
                         {
                             man++;
@@ -226,9 +249,9 @@ namespace Hang_man
                         if (man >= ou)
                         {
                             win = true;
-                            for (int i = 0; Word.Length > i; i++)
+                            for (int i = 0; Unknown.Length > i; i++)
                             {
-                                if (Convert.ToString(Word[i]) != screen[i])
+                                if (Convert.ToString(Unknown[i]) != screen[i])
                                 {
                                     win = false;
                                     break;
@@ -238,19 +261,21 @@ namespace Hang_man
                         }
                     }
                 }
-                Render(screen.ToArray(), man, ou, left.ToArray());
+                Render(screen.ToArray(), man, ou, left.ToArray(), wins);
                 if (done)
                 {
                     break;
                 }
             }
 
-            End(Word, win, Icon(man));
+            End(Unknown, win, Icon(man), wins);
             return win;
         }
-        public static void Render(string[] src, int lives, int ou, string[] lefto)
+        public static void Render(string[] src, int lives, int ou, string[] lefto, int wins)
         {
             Console.Clear();
+
+            Console.WriteLine("             Wins: " + System.Convert.ToString(wins));
 
             string[] ico = Icon(lives);
 
@@ -349,12 +374,12 @@ namespace Hang_man
 
             return error;
         }
-        public static void End(string Word, bool win, string[] man)
+        public static void End(string Word, bool win, string[] man, int wins)
         {
             Console.Clear();
             if (win)
             {
-                Console.WriteLine("You Win!!!");
+                Console.WriteLine("You Win!!!, Wins: " + System.Convert.ToString(wins + 1));
                 Console.WriteLine();
                 foreach (string ic in man)
                 {
@@ -365,7 +390,7 @@ namespace Hang_man
             }
             else
             {
-                Console.WriteLine("You Lose :(");
+                Console.WriteLine("You Lose :( , Wins: " + System.Convert.ToString(wins - 1));
                 Console.WriteLine();
                 foreach (string ic in man)
                 {
