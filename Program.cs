@@ -20,10 +20,13 @@ namespace Hang_man
             }
             catch
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("UNABLE TO OPEN WORDS.TXT, PLEASE MAKE SURE IT HASNT BEEN DELETED");
                 Console.WriteLine();
                 Console.WriteLine("The Current Programme Has Been Closed");
                 Console.ReadKey();
+                Console.ForegroundColor = ConsoleColor.White;
+
                 return;
             }
             
@@ -40,8 +43,8 @@ namespace Hang_man
             Console.WriteLine();
             Console.WriteLine("[Benjamin B-L]");
             Console.WriteLine();
-            Console.WriteLine("[V = 4.3.0]");
-            Console.WriteLine("Wins");
+            Console.WriteLine("[V = 4.3.1]");
+            Console.WriteLine("Performance Enhancements");
             Console.WriteLine();
 
             System.ConsoleKeyInfo tmprk = Console.ReadKey();
@@ -235,7 +238,7 @@ namespace Hang_man
                         else
                         {
 
-                            if (Ischar(System.Convert.ToChar(key)))
+                            if (char.IsLetter(System.Convert.ToChar(key)))
                             {
                                 man++;
                                 left.Add(key);
@@ -401,23 +404,6 @@ namespace Hang_man
             }
 
             Console.WriteLine();
-        }
-        public static bool Ischar(char lett)
-        {
-            bool o = false;
-
-            char[] all = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-
-            foreach (char let in all)
-            {
-                if (lett == let)
-                {
-                    o = true;
-                    break;
-                }
-            }
-
-            return o;
         }
     }
 }
